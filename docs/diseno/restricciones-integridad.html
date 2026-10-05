@@ -87,12 +87,6 @@
   <div class="kicker">Bases de Datos II · Ingeniería de Software · Curso 2026–2027</div>
   <h1>Restricciones de integridad del diseño</h1>
   <div class="sub">Sistema de gestión para la generación automática de horarios docentes</div>
-  <div class="cover-meta">
-    <div><b>Documento base:</b> MER del equipo (Excalidraw, 4 vistas), Requerimientos informacionales (RI-01 … RI-21, RI-R1 … RI-R8) y Requerimientos funcionales</div>
-    <div><b>Motor objetivo:</b> PostgreSQL (modelo relacional) · ClickHouse (histórico analítico)</div>
-    <div><b>Versión:</b> 2.0 · octubre de 2026</div>
-    <div><b>Elaborado por:</b> Equipo de requerimientos</div>
-  </div>
 </section>
 
 <section class="toc">
@@ -320,10 +314,6 @@
     <tr><td class="c">RE-04</td><td>Excepción al solapamiento: un estudiante no puede ser también coordinador, jefe ni administrador.</td><td>Trigger en los subtipos</td><td><span class="tag">DD</span></td></tr>
   </tbody>
 </table>
-
-<div class="box warn">
-<p>El MER dibuja la especialización de USUARIO sin indicar si es <b>total o parcial</b> ni si es <b>disjunta o solapada</b>. RE-02 y RE-03 se basan en los requerimientos funcionales (“uno o más roles”), y hay que anotarlas en el diagrama.</p>
-</div>
 
 <h2>9. Restricciones semánticas (RS)</h2>
 <p>Son las reglas de negocio que involucran varias tuplas o varias relaciones. RS-01 a RS-08 formalizan las reglas de información RI-R1 a RI-R8, y el resto se deducen de los requerimientos funcionales y del MER. RS-05, RS-15, RS-23 y RS-24 son <b>restricciones de ciclo</b>: aparecen porque en el MER hay dos caminos entre las mismas entidades, y los dos tienen que llevar a la misma instancia.</p>
