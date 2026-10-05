@@ -656,7 +656,7 @@ CREATE TRIGGER tg_rx01_horario BEFORE UPDATE ON horario
   <thead><tr><th style="width:32%">Mecanismo</th><th>Restricciones</th></tr></thead>
   <tbody>
     <tr><td>Tipo / <code>CHECK</code> de columna</td><td>RD-01 … RD-23</td></tr>
-    <tr><td><code>CHECK</code> de tabla</td><td>RT-01 … RT-07, RT-09, RT-09</td></tr>
+    <tr><td><code>CHECK</code> de tabla</td><td>RT-01 … RT-09</td></tr>
     <tr><td><code>PRIMARY KEY</code> / <code>UNIQUE</code></td><td>RC-01 … RC-14, RP-05, RP-12, RP-14, RP-16</td></tr>
     <tr><td>Índice único parcial o sobre expresión</td><td>RC-08 (RS-01), RC-15, RS-02, RS-20</td></tr>
     <tr><td><code>FOREIGN KEY</code> simple y compuesta</td><td>RR-01 … RR-19, RS-04, RS-09, RS-23, RS-24, RP-01, RP-04, RP-06, RP-08 … RP-11, RP-15</td></tr>
@@ -669,24 +669,23 @@ CREATE TRIGGER tg_rx01_horario BEFORE UPDATE ON horario
 </table>
 
 <h2>14. Inconsistencias detectadas y decisiones pendientes</h2>
-<p>Al derivar las restricciones aparecieron problemas en el MER y en los documentos de requerimientos. Conviene corregirlos antes de que el equipo de base de datos implemente el esquema. Los puntos 1 a 6 salen del MER.</p>
+<p>Al derivar las restricciones aparecieron problemas en el MER y en los documentos de requerimientos. Conviene corregirlos antes de que el equipo de base de datos implemente el esquema. Los puntos 1 a 5 salen del MER.</p>
 <table>
   <thead><tr><th style="width:5%">#</th><th style="width:40%">Problema</th><th>Propuesta</th></tr></thead>
   <tbody>
     <tr><td class="c">1</td><td><b>Termina_en está dibujada como (1,1) — (1,1).</b> Así como está, toda solicitud tendría horario destino, incluso las pendientes o rechazadas. Y todo horario tendría que ser el destino de exactamente una solicitud, algo que no cumple un horario recién generado. Es imposible de satisfacer.</td><td>Junto a HORARIO poner <b>(0,1)</b>: una solicitud tiene como máximo un horario destino. Junto a SOLICITUD_CAMBIO poner <b>(0,N)</b>: un horario puede ser el destino de varias solicitudes o de ninguna.</td></tr>
     <tr><td class="c">2</td><td><b>Se_Utiliza (BLOQUE–PROGRAMA) está como (0,N) — (0,N)</b>, pero RI-08 dice que el bloque “se utiliza en uno o más programas”.</td><td>Decidir. Si vale RI-08, poner <b>(1,N)</b> junto a PROGRAMA y activar un trigger diferido. Este documento sigue el MER.</td></tr>
     <tr><td class="c">3</td><td><b>Se_Imparte_en (SESIÓN–AULA) y Contiene (AULA–EDIFICIO) no tienen cardinalidades.</b></td><td>Poner AULA (1,1) / SESIÓN (0,N) y EDIFICIO (1,1) / AULA (0,N), que es lo que adoptan RP-08 y RP-09.</td></tr>
-    <tr><td class="c">4</td><td><b>La especialización de USUARIO no indica la cobertura ni el solapamiento.</b></td><td>Marcarla como total y solapada (RE-02, RE-03).</td></tr>
-    <tr><td class="c">5</td><td><b>HORARIO tiene dos caminos a PROGRAMA</b> (Tiene y Genera vía COORDINADOR_EN_PROGRAMA). Es redundante y obliga a declarar RS-23.</td><td>O bien se elimina Tiene del MER, o bien se mantiene y se documenta RS-23. El esquema relacional ya los une en un solo atributo.</td></tr>
-    <tr><td class="c">6</td><td><b>Revisa admite (0,N) revisiones por horario</b>, pero el ciclo de vida (RX-01) solo permite una, porque las dos decisiones son finales.</td><td>Decidir si habrá varias rondas de revisión. Si no, dejar (0,1) junto a REVISIÓN.</td></tr>
-    <tr><td class="c">7</td><td><b>RI-R2, tal como está redactada, impide que un estudiante reciba el horario del semestre siguiente</b> del mismo programa, y también los cambios de horario (la asignación de origen sigue existiendo).</td><td>Aplicarla solo a asignaciones ACTIVAS y por período (RS-02).</td></tr>
-    <tr><td class="c">8</td><td><b>RI-09 (Parámetros) no tiene <i>cobertura de asignaturas</i> ni <i>cantidad total de bloques</i></b>, que el enunciado exige guardar con el horario y que usan las consultas 1 y 5. Además, no está claro qué significa <i>nivelComplejidad</i> como parámetro.</td><td>Añadir <code>coberturaAsignaturas</code> (porcentaje de las asignaturas del programa) y <code>cantidadTotalBloques</code> (&gt; 0), y definir o eliminar <code>nivelComplejidad</code>.</td></tr>
-    <tr><td class="c">9</td><td>RI-R7 dice “mismo día y horario”. Si se interpreta como igualdad exacta, una sesión de 10:00 a 12:00 y otra de 11:00 a 13:00 en la misma aula se considerarían válidas.</td><td>Formular la regla como solapamiento de intervalos (RS-07).</td></tr>
-    <tr><td class="c">10</td><td>Los RF piden gestionar <b>franjas horarias</b> y una <b>bitácora de auditoría</b>, pero ninguna de las dos está en los requerimientos informacionales.</td><td>Añadir las entidades <code>FranjaHoraria</code> y <code>Auditoria</code> en RI, o quitar esos RF.</td></tr>
-    <tr><td class="c">11</td><td>El enunciado habla del “coordinador asignado” al estudiante (el apoyo es “adicional al que tienen asignado”), pero ningún RI lo modela.</td><td>Decidir si es el coordinador que generó el horario de origen o una relación explícita Estudiante–Coordinador.</td></tr>
-    <tr><td class="c">12</td><td>Usuario (RI-01) no tiene credenciales, pero los RF exigen autenticación.</td><td>Añadir <code>correo</code> (único) y <code>hashContraseña</code>, más <code>activo</code> para la baja lógica.</td></tr>
-    <tr><td class="c">13</td><td>RI-R5 y “solo clasifica sus bloques” aparecen como reglas de información, pero son reglas de autorización.</td><td>Trasladarlas a la sección de seguridad (ver sección 12).</td></tr>
-    <tr><td class="c">14</td><td>RS-17 (aceptada) necesita saber qué aulas son laboratorios, pero ni el MER ni RI-13 tienen ese dato.</td><td>Añadir el atributo <code>tipo</code> ∈ {AULA, LABORATORIO} a AULA en el MER y en RI-13.</td></tr>
+    <tr><td class="c">4</td><td><b>HORARIO tiene dos caminos a PROGRAMA</b> (Tiene y Genera vía COORDINADOR_EN_PROGRAMA). Es redundante y obliga a declarar RS-23.</td><td>O bien se elimina Tiene del MER, o bien se mantiene y se documenta RS-23. El esquema relacional ya los une en un solo atributo.</td></tr>
+    <tr><td class="c">5</td><td><b>Revisa admite (0,N) revisiones por horario</b>, pero el ciclo de vida (RX-01) solo permite una, porque las dos decisiones son finales.</td><td>Decidir si habrá varias rondas de revisión. Si no, dejar (0,1) junto a REVISIÓN.</td></tr>
+    <tr><td class="c">6</td><td><b>RI-R2, tal como está redactada, impide que un estudiante reciba el horario del semestre siguiente</b> del mismo programa, y también los cambios de horario (la asignación de origen sigue existiendo).</td><td>Aplicarla solo a asignaciones ACTIVAS y por período (RS-02).</td></tr>
+    <tr><td class="c">7</td><td><b>RI-09 (Parámetros) no tiene <i>cobertura de asignaturas</i> ni <i>cantidad total de bloques</i></b>, que el enunciado exige guardar con el horario y que usan las consultas 1 y 5. Además, no está claro qué significa <i>nivelComplejidad</i> como parámetro.</td><td>Añadir <code>coberturaAsignaturas</code> (porcentaje de las asignaturas del programa) y <code>cantidadTotalBloques</code> (&gt; 0), y definir o eliminar <code>nivelComplejidad</code>.</td></tr>
+    <tr><td class="c">8</td><td>RI-R7 dice “mismo día y horario”. Si se interpreta como igualdad exacta, una sesión de 10:00 a 12:00 y otra de 11:00 a 13:00 en la misma aula se considerarían válidas.</td><td>Formular la regla como solapamiento de intervalos (RS-07).</td></tr>
+    <tr><td class="c">9</td><td>Los RF piden gestionar <b>franjas horarias</b> y una <b>bitácora de auditoría</b>, pero ninguna de las dos está en los requerimientos informacionales.</td><td>Añadir las entidades <code>FranjaHoraria</code> y <code>Auditoria</code> en RI, o quitar esos RF.</td></tr>
+    <tr><td class="c">10</td><td>El enunciado habla del “coordinador asignado” al estudiante (el apoyo es “adicional al que tienen asignado”), pero ningún RI lo modela.</td><td>Decidir si es el coordinador que generó el horario de origen o una relación explícita Estudiante–Coordinador.</td></tr>
+    <tr><td class="c">11</td><td>Usuario (RI-01) no tiene credenciales, pero los RF exigen autenticación.</td><td>Añadir <code>correo</code> (único) y <code>hashContraseña</code>, más <code>activo</code> para la baja lógica.</td></tr>
+    <tr><td class="c">12</td><td>RI-R5 y “solo clasifica sus bloques” aparecen como reglas de información, pero son reglas de autorización.</td><td>Trasladarlas a la sección de seguridad (ver sección 12).</td></tr>
+    <tr><td class="c">13</td><td>RS-17 (aceptada) necesita saber qué aulas son laboratorios, pero ni el MER ni RI-13 tienen ese dato.</td><td>Añadir el atributo <code>tipo</code> ∈ {AULA, LABORATORIO} a AULA en el MER y en RI-13.</td></tr>
   </tbody>
 </table>
 
