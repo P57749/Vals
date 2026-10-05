@@ -90,7 +90,7 @@
   <div class="cover-meta">
     <div><b>Documento base:</b> MER del equipo (Excalidraw, 4 vistas), Requerimientos informacionales (RI-01 … RI-21, RI-R1 … RI-R8) y Requerimientos funcionales</div>
     <div><b>Motor objetivo:</b> PostgreSQL (modelo relacional) · ClickHouse (histórico analítico)</div>
-    <div><b>Versión:</b> 1.1 · octubre de 2026</div>
+    <div><b>Versión:</b> 2.0 · octubre de 2026</div>
     <div><b>Elaborado por:</b> Equipo de requerimientos</div>
   </div>
 </section>
@@ -112,6 +112,7 @@
     <li>12. Reglas que <i>no</i> son restricciones de integridad</li>
     <li>13. Implementación en PostgreSQL</li>
     <li>14. Inconsistencias detectadas y decisiones pendientes</li>
+    <li>15. Decisiones de diseño adoptadas (DD)</li>
   </ol>
 </section>
 
@@ -140,7 +141,7 @@
   <li><span class="tag">RI-xx</span> Se deduce directamente de los requerimientos informacionales o de sus reglas (RI-R1 … RI-R8).</li>
   <li><span class="tag">MER</span> Se deduce de las cardinalidades o de la estructura del diagrama entidad-relación.</li>
   <li><span class="tag">RF</span> Se deduce de los requerimientos funcionales o del enunciado.</li>
-  <li><span class="tag s">Supuesto</span> Es una decisión de diseño del equipo que <b>aún no está validada</b> por los profesores. Hay que confirmarla o descartarla (ver sección 14).</li>
+  <li><span class="tag">DD</span> Es una <b>decisión de diseño</b> adoptada por el equipo para completar un dato que el enunciado, el MER y los requerimientos no especifican. La justificación de cada una está en la sección 15.</li>
 </ul>
 
 <h3>1.3 Notación</h3>
@@ -190,25 +191,25 @@
 <table>
   <thead><tr><th style="width:8%">Código</th><th style="width:30%">Atributo(s)</th><th>Dominio</th><th style="width:12%">Origen</th></tr></thead>
   <tbody>
-    <tr><td class="c">RD-01</td><td>Todos los <code>id…</code></td><td>Entero positivo generado por el sistema (<code>GENERATED ALWAYS AS IDENTITY</code>).</td><td><span class="tag s">Supuesto</span></td></tr>
+    <tr><td class="c">RD-01</td><td>Todos los <code>id…</code></td><td>Entero positivo generado por el sistema (<code>GENERATED ALWAYS AS IDENTITY</code>).</td><td><span class="tag">DD</span></td></tr>
     <tr><td class="c">RD-02</td><td>Usuario.nombre, Grupo.nombre, Asignatura.nombre, ProgramaAcademico.nombre, Edificio.nombre, Aula.nombre, PeriodoAcademico.nombre</td><td>Texto obligatorio, no vacío tras eliminar espacios, longitud máxima 150.</td><td>RI-01…RI-14</td></tr>
-    <tr><td class="c">RD-03</td><td>Estudiante.edad</td><td>Entero entre 16 y 99.</td><td>RI-02 · <span class="tag s">Supuesto</span> (rango)</td></tr>
+    <tr><td class="c">RD-03</td><td>Estudiante.edad</td><td>Entero entre 16 y 99.</td><td>RI-02 · <span class="tag">DD</span> (rango)</td></tr>
     <tr><td class="c">RD-04</td><td>Coordinador.especialidad, ProgramaAcademico.planEstudio</td><td>Texto obligatorio no vacío.</td><td>RI-03, RI-05</td></tr>
     <tr><td class="c">RD-05</td><td>CoordinadorPrograma.puedeGenerar, puedeValidar</td><td>Booleano obligatorio, valor por defecto <code>false</code>.</td><td>RI-04</td></tr>
     <tr><td class="c">RD-06</td><td>BloqueContenido.tipoActividad</td><td>{TEORICA, PRACTICA, LABORATORIO}</td><td>RI-08</td></tr>
     <tr><td class="c">RD-07</td><td>BloqueContenido.nivelComplejidad, ParametrosGeneracion.nivelComplejidad</td><td>{BAJO, MEDIO, ALTO}</td><td>RI-08, RI-09</td></tr>
     <tr><td class="c">RD-08</td><td>BloqueContenido.descripcion</td><td>Texto obligatorio, no vacío.</td><td>RI-08</td></tr>
-    <tr><td class="c">RD-09</td><td>ParametrosGeneracion.proporcion*</td><td>Entero entre 0 y 100 (porcentaje). Ver la nota de RT-01.</td><td>RI-09 · <span class="tag s">Supuesto</span> (escala)</td></tr>
-    <tr><td class="c">RD-10</td><td>Horario.estado</td><td>{GENERADO, VALIDADO, APROBADO, RECHAZADO}</td><td>RI-10 · <span class="tag s">Supuesto</span> (valores)</td></tr>
-    <tr><td class="c">RD-11</td><td>PeriodoAcademico.estado</td><td>{PLANIFICADO, ACTIVO, CERRADO}</td><td>RI-11 · <span class="tag s">Supuesto</span></td></tr>
-    <tr><td class="c">RD-12</td><td>Sesion.estado</td><td>{PROGRAMADA, IMPARTIDA, CANCELADA}</td><td>RI-12 · <span class="tag s">Supuesto</span></td></tr>
-    <tr><td class="c">RD-13</td><td>Aula.estado</td><td>{DISPONIBLE, MANTENIMIENTO, INACTIVA}</td><td>RI-13 · <span class="tag s">Supuesto</span></td></tr>
+    <tr><td class="c">RD-09</td><td>ParametrosGeneracion.proporcion*</td><td>Entero entre 0 y 100 (porcentaje). Ver la nota de RT-01.</td><td>RI-09 · <span class="tag">DD</span> (escala)</td></tr>
+    <tr><td class="c">RD-10</td><td>Horario.estado</td><td>{GENERADO, VALIDADO, APROBADO, RECHAZADO}</td><td>RI-10 · <span class="tag">DD</span> (valores)</td></tr>
+    <tr><td class="c">RD-11</td><td>PeriodoAcademico.estado</td><td>{PLANIFICADO, ACTIVO, CERRADO}</td><td>RI-11 · <span class="tag">DD</span></td></tr>
+    <tr><td class="c">RD-12</td><td>Sesion.estado</td><td>{PROGRAMADA, IMPARTIDA, CANCELADA}</td><td>RI-12 · <span class="tag">DD</span></td></tr>
+    <tr><td class="c">RD-13</td><td>Aula.estado</td><td>{DISPONIBLE, MANTENIMIENTO, INACTIVA}</td><td>RI-13 · <span class="tag">DD</span></td></tr>
     <tr><td class="c">RD-14</td><td>Aula.capacidad</td><td>Entero &gt; 0.</td><td>RI-13</td></tr>
-    <tr><td class="c">RD-15</td><td>AsignacionHorario.estado</td><td>{ACTIVA, ANULADA}</td><td>RI-15 · <span class="tag s">Supuesto</span></td></tr>
-    <tr><td class="c">RD-16</td><td>Asistencia.estadoAsistencia</td><td>{PRESENTE, AUSENTE, JUSTIFICADO}</td><td>RI-16 · <span class="tag s">Supuesto</span></td></tr>
-    <tr><td class="c">RD-17</td><td>Validacion.decision</td><td>{VALIDADO, NO_VALIDADO}</td><td>RI-17 · <span class="tag s">Supuesto</span></td></tr>
+    <tr><td class="c">RD-15</td><td>AsignacionHorario.estado</td><td>{ACTIVA, ANULADA}</td><td>RI-15 · <span class="tag">DD</span></td></tr>
+    <tr><td class="c">RD-16</td><td>Asistencia.estadoAsistencia</td><td>{PRESENTE, AUSENTE, JUSTIFICADO}</td><td>RI-16 · <span class="tag">DD</span></td></tr>
+    <tr><td class="c">RD-17</td><td>Validacion.decision</td><td>{VALIDADO, NO_VALIDADO}</td><td>RI-17 · <span class="tag">DD</span></td></tr>
     <tr><td class="c">RD-18</td><td>Revision.decision</td><td>{APROBADO, RECHAZADO}</td><td>RI-18, RF</td></tr>
-    <tr><td class="c">RD-19</td><td>SolicitudCambio.estado</td><td>{PENDIENTE, EN_ATENCION, RESUELTA}</td><td>RI-19 · <span class="tag s">Supuesto</span></td></tr>
+    <tr><td class="c">RD-19</td><td>SolicitudCambio.estado</td><td>{PENDIENTE, EN_ATENCION, RESUELTA}</td><td>RI-19 · <span class="tag">DD</span></td></tr>
     <tr><td class="c">RD-20</td><td>SolicitudCambio.resultado</td><td>{ACEPTADA, RECHAZADA} o nulo.</td><td>RI-19, RF</td></tr>
     <tr><td class="c">RD-21</td><td>SolicitudCambio.motivo</td><td>Texto obligatorio, no vacío.</td><td>RF</td></tr>
     <tr><td class="c">RD-22</td><td>Fechas de registro (fechaCreacion, fechaAsignacion, fechaRegistro, fechaValidacion, fechaRevision, fechaSolicitud)</td><td>Marca de tiempo con zona horaria (<code>timestamptz</code>), obligatoria, por defecto el instante de inserción y no posterior a él.</td><td>RI-10…RI-19</td></tr>
@@ -223,12 +224,12 @@
     <tr><td class="c">RT-01</td><td>Las tres proporciones de los parámetros suman exactamente 100 %.</td><td class="formal">p.proporcionTeorica + p.proporcionPractica + p.proporcionLaboratorio = 100</td><td>RI-09</td></tr>
     <tr><td class="c">RT-02</td><td>Un período empieza antes de terminar.</td><td class="formal">p.fechaInicio &lt; p.fechaFin</td><td>RI-11</td></tr>
     <tr><td class="c">RT-03</td><td>Una sesión empieza antes de terminar.</td><td class="formal">s.horaInicio &lt; s.horaFin</td><td>RI-12</td></tr>
-    <tr><td class="c">RT-04</td><td>Una autorización de coordinador concede al menos un permiso; si no, la fila no tiene sentido.</td><td class="formal">cp.puedeGenerar ∨ cp.puedeValidar</td><td>RI-04 · <span class="tag s">Supuesto</span></td></tr>
+    <tr><td class="c">RT-04</td><td>Una autorización de coordinador concede al menos un permiso; si no, la fila no tiene sentido.</td><td class="formal">cp.puedeGenerar ∨ cp.puedeValidar</td><td>RI-04 · <span class="tag">DD</span></td></tr>
     <tr><td class="c">RT-05</td><td>Una solicitud está RESUELTA si y solo si tiene resultado, fecha de resolución y coordinador que la resolvió.</td><td class="formal">sc.estado = RESUELTA ⇔ (sc.resultado ≠ nulo ∧ sc.fechaResolucion ≠ nulo ∧ sc.idCoordinadorResuelve ≠ nulo)</td><td>RI-19, RI-R8</td></tr>
     <tr><td class="c">RT-06</td><td>Una solicitud aceptada indica a qué horario se cambió, y ese horario es distinto del de origen.</td><td class="formal">sc.resultado = ACEPTADA ⇒ (sc.idHorarioDestino ≠ nulo ∧ sc.idHorarioDestino ≠ sc.idHorarioOrigen)</td><td>RI-19, RI-R8</td></tr>
     <tr><td class="c">RT-07</td><td>Una solicitud no se resuelve antes de presentarse.</td><td class="formal">sc.fechaResolucion ≠ nulo ⇒ sc.fechaResolucion ≥ sc.fechaSolicitud</td><td>RI-19</td></tr>
     <tr><td class="c">RT-08</td><td>Un rechazo del jefe de departamento debe indicar los criterios para la nueva generación.</td><td class="formal">r.decision = RECHAZADO ⇒ r.criteriosNuevaGeneracion ≠ nulo</td><td>RI-18, RF</td></tr>
-    <tr><td class="c">RT-09</td><td>Una validación negativa debe tener observaciones que la justifiquen.</td><td class="formal">v.decision = NO_VALIDADO ⇒ v.observaciones ≠ nulo</td><td><span class="tag s">Supuesto</span></td></tr>
+    <tr><td class="c">RT-09</td><td>Una validación negativa debe tener observaciones que la justifiquen.</td><td class="formal">v.decision = NO_VALIDADO ⇒ v.observaciones ≠ nulo</td><td><span class="tag">DD</span></td></tr>
   </tbody>
 </table>
 <div class="box note">
@@ -241,19 +242,19 @@
   <tbody>
     <tr><td class="c">RC-01</td><td>Todas</td><td>Toda relación tiene clave primaria; ningún atributo de la clave primaria admite nulos (integridad de entidad).</td><td>Modelo relacional</td></tr>
     <tr><td class="c">RC-02</td><td>Usuario y subtipos</td><td>PK <code>idUsuario</code>. En cada subtipo, la PK es también FK a Usuario (RE-01).</td><td>RI-01</td></tr>
-    <tr><td class="c">RC-03</td><td>ProgramaAcademico</td><td>PK <code>idPrograma</code>; clave candidata <code>(nombre, planEstudio)</code>.</td><td>RI-05 · <span class="tag s">Supuesto</span></td></tr>
-    <tr><td class="c">RC-04</td><td>Asignatura, Grupo, Edificio</td><td>PK <code>id…</code>; clave candidata <code>nombre</code>.</td><td><span class="tag s">Supuesto</span></td></tr>
-    <tr><td class="c">RC-05</td><td>Aula</td><td>PK <code>idAula</code>; clave candidata <code>(idEdificio, nombre)</code>: dos aulas del mismo edificio no se llaman igual.</td><td>RI-13 · <span class="tag s">Supuesto</span></td></tr>
-    <tr><td class="c">RC-06</td><td>PeriodoAcademico</td><td>PK <code>idPeriodo</code>; clave candidata <code>nombre</code>.</td><td><span class="tag s">Supuesto</span></td></tr>
+    <tr><td class="c">RC-03</td><td>ProgramaAcademico</td><td>PK <code>idPrograma</code>; clave candidata <code>(nombre, planEstudio)</code>.</td><td>RI-05 · <span class="tag">DD</span></td></tr>
+    <tr><td class="c">RC-04</td><td>Asignatura, Grupo, Edificio</td><td>PK <code>id…</code>; clave candidata <code>nombre</code>.</td><td><span class="tag">DD</span></td></tr>
+    <tr><td class="c">RC-05</td><td>Aula</td><td>PK <code>idAula</code>; clave candidata <code>(idEdificio, nombre)</code>: dos aulas del mismo edificio no se llaman igual.</td><td>RI-13 · <span class="tag">DD</span></td></tr>
+    <tr><td class="c">RC-06</td><td>PeriodoAcademico</td><td>PK <code>idPeriodo</code>; clave candidata <code>nombre</code>.</td><td><span class="tag">DD</span></td></tr>
     <tr><td class="c">RC-07</td><td>ProgramaAsignatura, Matricula, BloquePrograma, CoordinadorPrograma</td><td>PK compuesta por las dos FK. Así se impide repetir el mismo par.</td><td>RI-02, RI-04, RI-05, RI-08</td></tr>
-    <tr><td class="c">RC-08</td><td>BloqueContenido</td><td><b>No pueden existir bloques duplicados.</b> Clave candidata: <code>(idAsignatura, tipoActividad, descripción normalizada)</code>. La descripción se normaliza pasando a minúsculas, sin espacios al inicio ni al final y con los espacios internos reducidos a uno.</td><td><b>RI-R1</b> · <span class="tag s">Supuesto</span> (criterio)</td></tr>
+    <tr><td class="c">RC-08</td><td>BloqueContenido</td><td><b>No pueden existir bloques duplicados.</b> Clave candidata: <code>(idAsignatura, tipoActividad, descripción normalizada)</code>. La descripción se normaliza pasando a minúsculas, sin espacios al inicio ni al final y con los espacios internos reducidos a uno.</td><td><b>RI-R1</b> · <span class="tag">DD</span> (criterio)</td></tr>
     <tr><td class="c">RC-09</td><td>HorarioBloque</td><td>PK <code>(idHorario, idBloque)</code>: un bloque aparece una sola vez en cada horario. Sus repeticiones semanales se representan como sesiones.</td><td>RI-10</td></tr>
     <tr><td class="c">RC-10</td><td>Horario</td><td>PK <code>idHorario</code>; además se declaran <code>UNIQUE (idHorario, idPrograma)</code> y <code>UNIQUE (idHorario, idPrograma, idPeriodo)</code> como destino de las FK compuestas (sección 13.2).</td><td>Técnico</td></tr>
     <tr><td class="c">RC-11</td><td>AsignacionHorario</td><td>PK <code>(idEstudiante, idHorario)</code>.</td><td>RI-15</td></tr>
     <tr><td class="c">RC-12</td><td>Asistencia</td><td>PK <code>(idEstudiante, idSesion)</code>: un único registro de asistencia por estudiante y sesión.</td><td>RI-16</td></tr>
-    <tr><td class="c">RC-13</td><td>Validacion</td><td>PK <code>idValidacion</code>; <code>UNIQUE (idHorario, idCoordinador)</code>: un coordinador valida un horario una sola vez.</td><td>RI-17 · <span class="tag s">Supuesto</span></td></tr>
+    <tr><td class="c">RC-13</td><td>Validacion</td><td>PK <code>idValidacion</code>; <code>UNIQUE (idHorario, idCoordinador)</code>: un coordinador valida un horario una sola vez.</td><td>RI-17 · <span class="tag">DD</span></td></tr>
     <tr><td class="c">RC-14</td><td>Revision</td><td>PK <code>idRevision</code>. El MER admite varias revisiones por horario (HORARIO 1,1 — Revisa — 0,N REVISIÓN). Pero, como las dos decisiones posibles son finales (RX-01), en la práctica habrá como máximo una. Si el equipo quiere varias rondas de revisión sobre el mismo horario, hay que cambiar RX-01.</td><td>RI-18, MER</td></tr>
-    <tr><td class="c">RC-15</td><td>SolicitudCambio</td><td>PK <code>idSolicitud</code>; como máximo una solicitud no resuelta por estudiante y horario de origen (índice único parcial).</td><td><span class="tag s">Supuesto</span></td></tr>
+    <tr><td class="c">RC-15</td><td>SolicitudCambio</td><td>PK <code>idSolicitud</code>; como máximo una solicitud no resuelta por estudiante y horario de origen (índice único parcial).</td><td><span class="tag">DD</span></td></tr>
   </tbody>
 </table>
 
@@ -296,8 +297,8 @@
     <tr><td class="c">RP-05</td><td>BLOQUE (0,N) — Se_Utiliza — (0,N) PROGRAMA</td><td>Un bloque puede no utilizarse en ningún programa. <b>Esto contradice RI-08</b> (“se utiliza en uno o más programas”); ver sección 14.</td><td>PK compuesta, sin mínimo</td><td>MER</td></tr>
     <tr><td class="c">RP-06</td><td>CEP (1,1) — Genera — (0,N) HORARIO<br>PROGRAMA (1,1) — Tiene — (0,N) HORARIO<br>PERÍODO (1,1) — Contiene — (0,N) HORARIO</td><td>Cada horario lo genera exactamente un coordinador en programa y pertenece a exactamente un programa y un período.</td><td>FK NOT NULL</td><td>MER, RI-10</td></tr>
     <tr><td class="c">RP-07</td><td>HORARIO (0,N) — Se_Genera_A_Partir — (1,N) BLOQUE</td><td>Cada horario se genera a partir de <b>uno o más</b> bloques. Un bloque puede no estar en ningún horario.</td><td>Trigger diferido</td><td>MER, RI-10</td></tr>
-    <tr><td class="c">RP-08</td><td>HORARIO (1,1) — Contiene — (1,N) SESIÓN<br>BLOQUE (1,1) — Imparte — (0,N) SESIÓN<br>SESIÓN — Se_Imparte_en — AULA</td><td>Cada sesión pertenece a exactamente un horario e imparte exactamente un bloque. En Se_Imparte_en el MER <b>no tiene cardinalidades</b>; se asume que cada sesión ocurre en exactamente un aula y que un aula tiene de cero a N sesiones.</td><td>FK NOT NULL</td><td>MER, RI-12 · <span class="tag s">Supuesto</span> (aula)</td></tr>
-    <tr><td class="c">RP-09</td><td>AULA — Contiene — EDIFICIO</td><td>El MER <b>no tiene cardinalidades</b>. Se asume que cada aula pertenece a exactamente un edificio (RI-13) y que un edificio tiene de cero a N aulas.</td><td>FK NOT NULL</td><td>RI-13 · <span class="tag s">Supuesto</span></td></tr>
+    <tr><td class="c">RP-08</td><td>HORARIO (1,1) — Contiene — (1,N) SESIÓN<br>BLOQUE (1,1) — Imparte — (0,N) SESIÓN<br>SESIÓN — Se_Imparte_en — AULA</td><td>Cada sesión pertenece a exactamente un horario e imparte exactamente un bloque. En Se_Imparte_en el MER <b>no tiene cardinalidades</b>; se adopta que cada sesión ocurre en exactamente un aula y que un aula tiene de cero a N sesiones.</td><td>FK NOT NULL</td><td>MER, RI-12 · <span class="tag">DD</span> (aula)</td></tr>
+    <tr><td class="c">RP-09</td><td>AULA — Contiene — EDIFICIO</td><td>El MER <b>no tiene cardinalidades</b>. Se adopta que cada aula pertenece a exactamente un edificio (RI-13) y que un edificio tiene de cero a N aulas.</td><td>FK NOT NULL</td><td>RI-13 · <span class="tag">DD</span></td></tr>
     <tr><td class="c">RP-10</td><td>JEFE (1,1) — Realiza — (0,N) REVISIÓN<br>HORARIO (1,1) — Revisa — (0,N) REVISIÓN<br>REVISIÓN (0,1) — Genera — (0,N) HORARIO</td><td>Cada revisión la hace exactamente un jefe sobre exactamente un horario. Un horario puede originarse en, como máximo, una revisión.</td><td>FK NOT NULL / FK nula <code>idRevisionOrigen</code> en Horario</td><td>MER, RI-18</td></tr>
     <tr><td class="c">RP-11</td><td>ESTUDIANTE (1,1) — Presenta — (0,N) SOLICITUD<br>HORARIO (1,1) — Parte_de — (0,N) SOLICITUD<br>COORDINADOR (0,1) — Solicita_Apoyo / Resuelve — (0,N) SOLICITUD<br>HORARIO (1,1) — Termina_en — (1,1) SOLICITUD</td><td>Cada solicitud la presenta exactamente un estudiante y parte de exactamente un horario. Tiene como máximo un coordinador de apoyo y uno que la resuelve. <b>Termina_en</b> está mal dibujada (sección 14). Se implementa como FK <b>nula</b> <code>idHorarioDestino</code>, obligatoria solo si la solicitud fue aceptada (RT-06).</td><td>FK NOT NULL / FK nula</td><td>MER, RI-19</td></tr>
     <tr><td class="c">RP-12</td><td>HORARIO (1,1) — Utiliza — (1,1) PARÁMETROS</td><td>Relación 1:1 total en ambos sentidos. Cada horario usa exactamente un conjunto de parámetros, y cada conjunto de parámetros pertenece a exactamente un horario: no se comparten.</td><td><code>NOT NULL UNIQUE (idParametro)</code> en Horario + trigger diferido (ningún parámetro queda sin horario)</td><td>MER, RI-R6</td></tr>
@@ -316,7 +317,7 @@
     <tr><td class="c">RE-01</td><td>Cada fila de un subtipo (Administrador, Estudiante, Coordinador, JefeDepartamento) corresponde a un Usuario existente y tiene su mismo identificador.</td><td>PK = FK a Usuario (RR-01)</td><td>RI-01</td></tr>
     <tr><td class="c">RE-02</td><td><b>Especialización total:</b> todo usuario pertenece al menos a un subtipo.</td><td>Trigger diferido sobre Usuario</td><td>RI-01, RF</td></tr>
     <tr><td class="c">RE-03</td><td><b>Especialización solapada:</b> un usuario puede tener varios roles a la vez (por ejemplo, coordinador y jefe de departamento), porque los RF dicen “uno o más roles”.</td><td>Sin restricción de exclusión</td><td>RF</td></tr>
-    <tr><td class="c">RE-04</td><td>Excepción al solapamiento: un estudiante no puede ser también coordinador, jefe ni administrador.</td><td>Trigger en los subtipos</td><td><span class="tag s">Supuesto</span></td></tr>
+    <tr><td class="c">RE-04</td><td>Excepción al solapamiento: un estudiante no puede ser también coordinador, jefe ni administrador.</td><td>Trigger en los subtipos</td><td><span class="tag">DD</span></td></tr>
   </tbody>
 </table>
 
@@ -358,7 +359,7 @@
       <td class="c">RS-05</td>
       <td>La validación de un horario la hace un coordinador autorizado en el <b>mismo programa</b> del horario, y que no sea quien lo generó.<br><span class="formal">∀ v ∈ Validacion, h ∈ Horario: v.idHorario = h.idHorario ⇒ v.idPrograma = h.idPrograma ∧ v.idCoordinador ≠ h.idCoordinador</span></td>
       <td>FK compuesta <code>(idHorario, idPrograma)</code> → Horario y trigger para la segunda condición.</td>
-      <td>RI-17 · <span class="tag s">Supuesto</span> (≠ generador)</td>
+      <td>RI-17 · <span class="tag">DD</span> (≠ generador)</td>
     </tr>
     <tr>
       <td class="c">RS-06</td>
@@ -406,13 +407,13 @@
       <td class="c">RS-13</td>
       <td>Solo se revisan horarios en estado <b>VALIDADO</b>. Al registrar la revisión, el estado del horario pasa a APROBADO o RECHAZADO según la decisión, en la misma transacción.</td>
       <td>Trigger <code>AFTER INSERT</code> en Revision.</td>
-      <td>RI-17, RI-18 · <span class="tag s">Supuesto</span> (orden)</td>
+      <td>RI-17, RI-18 · <span class="tag">DD</span> (orden)</td>
     </tr>
     <tr>
       <td class="c">RS-14</td>
       <td>El coordinador de apoyo y el que resuelve una solicitud deben estar autorizados en el programa del horario de origen.</td>
       <td>Trigger en SolicitudCambio.</td>
-      <td>RI-19 · <span class="tag s">Supuesto</span></td>
+      <td>RI-19 · <span class="tag">DD</span></td>
     </tr>
     <tr>
       <td class="c">RS-15</td>
@@ -430,31 +431,31 @@
       <td class="c">RS-17</td>
       <td>Solo se programan sesiones en aulas DISPONIBLES. Una sesión de un bloque de LABORATORIO solo se programa en un aula preparada como laboratorio.</td>
       <td>Trigger en Sesion. La segunda parte requiere añadir el atributo <code>Aula.tipo</code>.</td>
-      <td>RI-13 · <span class="tag s">Supuesto</span></td>
+      <td>RI-13 · <span class="tag">DD</span></td>
     </tr>
     <tr>
       <td class="c">RS-18</td>
       <td>La cantidad de estudiantes con asignación ACTIVA a un horario no supera la capacidad de ningún aula en la que haya sesiones de ese horario.</td>
       <td>Trigger en AsignacionHorario y Sesion.</td>
-      <td><span class="tag s">Supuesto</span></td>
+      <td><span class="tag">DD</span></td>
     </tr>
     <tr>
       <td class="c">RS-19</td>
       <td>Un estudiante no tiene, entre sus horarios ACTIVOS, dos sesiones que se solapen en el tiempo.</td>
       <td>Trigger en AsignacionHorario. Complementa RS-02 si “doble asignación” incluye el choque de horas.</td>
-      <td>RF · <span class="tag s">Supuesto</span></td>
+      <td>RF · <span class="tag">DD</span></td>
     </tr>
     <tr>
       <td class="c">RS-20</td>
       <td>Los períodos académicos no se solapan y hay como mucho uno en estado ACTIVO.</td>
       <td>Restricción de exclusión sobre <code>daterange</code> e índice único parcial.</td>
-      <td><span class="tag s">Supuesto</span></td>
+      <td><span class="tag">DD</span></td>
     </tr>
     <tr>
       <td class="c">RS-21</td>
       <td>En un período CERRADO no se insertan ni modifican asignaciones, sesiones ni asistencias.</td>
       <td>Trigger en las tres relaciones.</td>
-      <td><span class="tag s">Supuesto</span></td>
+      <td><span class="tag">DD</span></td>
     </tr>
     <tr>
       <td class="c">RS-22</td>
@@ -497,11 +498,11 @@
   <tbody>
     <tr><td class="c">RX-02</td><td><b>Solicitud de cambio:</b> PENDIENTE → EN_ATENCION → RESUELTA, o directamente PENDIENTE → RESUELTA. RESUELTA es final: <i>resultado</i>, <i>fechaResolucion</i> e <i>idHorarioDestino</i> no cambian después de resolverse. Si el resultado es ACEPTADA, en la <b>misma transacción</b> la asignación de origen pasa a ANULADA y se crea la asignación ACTIVA al horario destino (RS-02 se sigue cumpliendo).</td><td>RI-19, RI-R8</td></tr>
     <tr><td class="c">RX-03</td><td><b>Inmutabilidad de la generación:</b> los atributos <i>fechaCreacion</i>, <i>idCoordinador</i>, <i>idPrograma</i>, <i>idPeriodo</i> e <i>idParametro</i> de Horario, todas las filas de ParametrosGeneracion ya referenciadas y las filas de HorarioBloque de un horario que ya no está en estado GENERADO no admiten <code>UPDATE</code> ni <code>DELETE</code>.</td><td>RI-R6, RF</td></tr>
-    <tr><td class="c">RX-04</td><td><b>Sesión:</b> PROGRAMADA → IMPARTIDA o PROGRAMADA → CANCELADA. Los dos estados finales no cambian. Una sesión con asistencias registradas no se cancela ni se borra.</td><td>RI-12 · <span class="tag s">Supuesto</span></td></tr>
-    <tr><td class="c">RX-05</td><td><b>Período:</b> PLANIFICADO → ACTIVO → CERRADO. No hay vuelta atrás.</td><td>RI-11 · <span class="tag s">Supuesto</span></td></tr>
-    <tr><td class="c">RX-06</td><td><b>Asignación:</b> ACTIVA → ANULADA. Una asignación anulada no se reactiva; si hace falta, se crea una nueva.</td><td>RI-15 · <span class="tag s">Supuesto</span></td></tr>
+    <tr><td class="c">RX-04</td><td><b>Sesión:</b> PROGRAMADA → IMPARTIDA o PROGRAMADA → CANCELADA. Los dos estados finales no cambian. Una sesión con asistencias registradas no se cancela ni se borra.</td><td>RI-12 · <span class="tag">DD</span></td></tr>
+    <tr><td class="c">RX-05</td><td><b>Período:</b> PLANIFICADO → ACTIVO → CERRADO. No hay vuelta atrás.</td><td>RI-11 · <span class="tag">DD</span></td></tr>
+    <tr><td class="c">RX-06</td><td><b>Asignación:</b> ACTIVA → ANULADA. Una asignación anulada no se reactiva; si hace falta, se crea una nueva.</td><td>RI-15 · <span class="tag">DD</span></td></tr>
     <tr><td class="c">RX-07</td><td><b>Validación y revisión</b> son registros de hechos: no admiten <code>UPDATE</code> ni <code>DELETE</code>.</td><td>RI-17, RI-18</td></tr>
-    <tr><td class="c">RX-08</td><td><b>Clasificación de bloques:</b> <i>tipoActividad</i>, <i>nivelComplejidad</i> e <i>idAsignatura</i> de un bloque no cambian si ese bloque ya forma parte de algún horario APROBADO. Si cambiaran, se alterarían los reportes históricos (consultas 2, 4 y 6).</td><td><span class="tag s">Supuesto</span></td></tr>
+    <tr><td class="c">RX-08</td><td><b>Clasificación de bloques:</b> <i>tipoActividad</i>, <i>nivelComplejidad</i> e <i>idAsignatura</i> de un bloque no cambian si ese bloque ya forma parte de algún horario APROBADO. Si cambiaran, se alterarían los reportes históricos (consultas 2, 4 y 6).</td><td><span class="tag">DD</span></td></tr>
   </tbody>
 </table>
 
@@ -684,7 +685,7 @@ CREATE TRIGGER tg_rx01_horario BEFORE UPDATE ON horario
   <tbody>
     <tr><td class="c">1</td><td><b>Termina_en está dibujada como (1,1) — (1,1).</b> Así como está, toda solicitud tendría horario destino, incluso las pendientes o rechazadas. Y todo horario tendría que ser el destino de exactamente una solicitud, algo que no cumple un horario recién generado. Es imposible de satisfacer.</td><td>Junto a HORARIO poner <b>(0,1)</b>: una solicitud tiene como máximo un horario destino. Junto a SOLICITUD_CAMBIO poner <b>(0,N)</b>: un horario puede ser el destino de varias solicitudes o de ninguna.</td></tr>
     <tr><td class="c">2</td><td><b>Se_Utiliza (BLOQUE–PROGRAMA) está como (0,N) — (0,N)</b>, pero RI-08 dice que el bloque “se utiliza en uno o más programas”.</td><td>Decidir. Si vale RI-08, poner <b>(1,N)</b> junto a PROGRAMA y activar un trigger diferido. Este documento sigue el MER.</td></tr>
-    <tr><td class="c">3</td><td><b>Se_Imparte_en (SESIÓN–AULA) y Contiene (AULA–EDIFICIO) no tienen cardinalidades.</b></td><td>Poner AULA (1,1) / SESIÓN (0,N) y EDIFICIO (1,1) / AULA (0,N), que es lo que asumen RP-08 y RP-09.</td></tr>
+    <tr><td class="c">3</td><td><b>Se_Imparte_en (SESIÓN–AULA) y Contiene (AULA–EDIFICIO) no tienen cardinalidades.</b></td><td>Poner AULA (1,1) / SESIÓN (0,N) y EDIFICIO (1,1) / AULA (0,N), que es lo que adoptan RP-08 y RP-09.</td></tr>
     <tr><td class="c">4</td><td><b>La especialización de USUARIO no indica la cobertura ni el solapamiento.</b></td><td>Marcarla como total y solapada (RE-02, RE-03).</td></tr>
     <tr><td class="c">5</td><td><b>HORARIO tiene dos caminos a PROGRAMA</b> (Tiene y Genera vía COORDINADOR_EN_PROGRAMA). Es redundante y obliga a declarar RS-23.</td><td>O bien se elimina Tiene del MER, o bien se mantiene y se documenta RS-23. El esquema relacional ya los une en un solo atributo.</td></tr>
     <tr><td class="c">6</td><td><b>Revisa admite (0,N) revisiones por horario</b>, pero el ciclo de vida (RX-01) solo permite una, porque las dos decisiones son finales.</td><td>Decidir si habrá varias rondas de revisión. Si no, dejar (0,1) junto a REVISIÓN.</td></tr>
@@ -695,8 +696,50 @@ CREATE TRIGGER tg_rx01_horario BEFORE UPDATE ON horario
     <tr><td class="c">11</td><td>El enunciado habla del “coordinador asignado” al estudiante (el apoyo es “adicional al que tienen asignado”), pero ningún RI lo modela.</td><td>Decidir si es el coordinador que generó el horario de origen o una relación explícita Estudiante–Coordinador.</td></tr>
     <tr><td class="c">12</td><td>Usuario (RI-01) no tiene credenciales, pero los RF exigen autenticación.</td><td>Añadir <code>correo</code> (único) y <code>hashContraseña</code>, más <code>activo</code> para la baja lógica.</td></tr>
     <tr><td class="c">13</td><td>RI-R5 y “solo clasifica sus bloques” aparecen como reglas de información, pero son reglas de autorización.</td><td>Trasladarlas a la sección de seguridad (ver sección 12).</td></tr>
-    <tr><td class="c">14</td><td>Está pendiente definir qué hace que dos bloques sean <b>duplicados</b> (RS-01), y si “doble asignación” incluye el choque de horas (RS-19).</td><td>Confirmarlo con los profesores.</td></tr>
-    <tr><td class="c">15</td><td>Las restricciones marcadas como <span class="tag s">Supuesto</span> (rangos de edad, valores de estados, orden validación → revisión, capacidad de aula) son decisiones del equipo.</td><td>Revisarlas en reunión y registrar la decisión.</td></tr>
+    <tr><td class="c">14</td><td>RS-17 (aceptada) necesita saber qué aulas son laboratorios, pero ni el MER ni RI-13 tienen ese dato.</td><td>Añadir el atributo <code>tipo</code> ∈ {AULA, LABORATORIO} a AULA en el MER y en RI-13.</td></tr>
+  </tbody>
+</table>
+
+<h2>15. Decisiones de diseño adoptadas (DD)</h2>
+<p>Las siguientes restricciones no están en el enunciado, el MER ni los requerimientos: completan información que esos documentos dejan abierta. El equipo las revisó y las <b>adoptó</b>. Cualquier cambio se hará en una nueva versión de este documento.</p>
+<table>
+  <thead><tr><th style="width:9%">Código</th><th style="width:36%">Decisión</th><th>Justificación</th></tr></thead>
+  <tbody>
+    <tr><td class="c">RD-01</td><td>Identificadores enteros generados por el sistema.</td><td>Son claves sustitutas: no cambian aunque cambien los datos de negocio, y EF Core las maneja directamente.</td></tr>
+    <tr><td class="c">RD-03</td><td>Edad entre 16 y 99 años.</td><td>Corresponde a la edad mínima de ingreso a la universidad y evita errores de captura (edades 0 o 200).</td></tr>
+    <tr><td class="c">RD-09</td><td>Proporciones como porcentaje entero.</td><td>Permite comprobar que la suma es exactamente 100 (RT-01), sin errores de redondeo con decimales.</td></tr>
+    <tr><td class="c">RD-10</td><td>Estados del horario: GENERADO, VALIDADO, APROBADO, RECHAZADO.</td><td>Reflejan el flujo generación → validación por un coordinador (RI-17) → revisión del jefe (RI-18).</td></tr>
+    <tr><td class="c">RD-11</td><td>Estados del período: PLANIFICADO, ACTIVO, CERRADO.</td><td>Distinguen períodos futuros, en curso y terminados. Son necesarios para RS-21 y para la carga del histórico (RH-02).</td></tr>
+    <tr><td class="c">RD-12</td><td>Estados de la sesión: PROGRAMADA, IMPARTIDA, CANCELADA.</td><td>Solo una sesión realmente impartida puede tener asistencia (RS-11). Las canceladas no cuentan para la ocupación.</td></tr>
+    <tr><td class="c">RD-13</td><td>Estados del aula: DISPONIBLE, MANTENIMIENTO, INACTIVA.</td><td>Un aula fuera de servicio no debe recibir sesiones (RS-17).</td></tr>
+    <tr><td class="c">RD-15</td><td>Estados de la asignación: ACTIVA, ANULADA.</td><td>Un cambio de horario anula la asignación anterior en vez de borrarla. Así se conserva el historial que pide RI-R8.</td></tr>
+    <tr><td class="c">RD-16</td><td>Estados de asistencia: PRESENTE, AUSENTE, JUSTIFICADO.</td><td>Separar la ausencia justificada hace más fiables las tasas de inasistencia de las consultas 4 y 6.</td></tr>
+    <tr><td class="c">RD-17</td><td>Decisión de la validación: VALIDADO, NO_VALIDADO.</td><td>La validación es una decisión binaria. El rechazo con criterios es tarea del jefe (RD-18).</td></tr>
+    <tr><td class="c">RD-19</td><td>Estados de la solicitud: PENDIENTE, EN_ATENCION, RESUELTA.</td><td>Los RF piden registrar “todo el proceso (estados y fechas)”.</td></tr>
+    <tr><td class="c">RT-04</td><td>Una autorización concede al menos un permiso.</td><td>Una fila de CoordinadorPrograma sin ningún permiso no tiene significado y confundiría las consultas de autorización.</td></tr>
+    <tr><td class="c">RT-09</td><td>Una validación negativa lleva observaciones.</td><td>Permite saber por qué se rechazó y completa la información de la consulta 3.</td></tr>
+    <tr><td class="c">RC-03</td><td>(nombre, planEstudio) es único en ProgramaAcademico.</td><td>Evita registrar dos veces el mismo programa. Permite que un programa con el mismo nombre exista en planes de estudio distintos.</td></tr>
+    <tr><td class="c">RC-04</td><td>El nombre es único en Asignatura, Grupo y Edificio.</td><td>Evita catálogos con entradas duplicadas que dividirían las estadísticas.</td></tr>
+    <tr><td class="c">RC-05</td><td>(idEdificio, nombre) es único en Aula.</td><td>Un aula se identifica por su nombre dentro de su edificio. Edificios distintos pueden tener aulas con el mismo nombre.</td></tr>
+    <tr><td class="c">RC-06</td><td>El nombre del período es único.</td><td>El nombre (por ejemplo, “2026-2027 S1”) es como los usuarios identifican el período.</td></tr>
+    <tr><td class="c">RC-08</td><td>Criterio de bloque duplicado: misma asignatura, mismo tipo y misma descripción normalizada.</td><td>Convierte RI-R1 en un criterio objetivo que la propia base de datos puede verificar con un índice único.</td></tr>
+    <tr><td class="c">RC-13</td><td>Un coordinador valida un mismo horario una sola vez.</td><td>Evita validaciones repetidas que inflarían la consulta 3.</td></tr>
+    <tr><td class="c">RC-15</td><td>Como máximo una solicitud abierta por estudiante y horario de origen.</td><td>Evita solicitudes duplicadas simultáneas sobre el mismo cambio.</td></tr>
+    <tr><td class="c">RP-08</td><td>Cada sesión ocurre en exactamente un aula.</td><td>Sin aula no se puede registrar la ocupación (RI-20) ni aplicar RS-07. Completa una cardinalidad que falta en el MER.</td></tr>
+    <tr><td class="c">RP-09</td><td>Cada aula pertenece a exactamente un edificio.</td><td>Lo dice RI-13. Completa una cardinalidad que falta en el MER.</td></tr>
+    <tr><td class="c">RE-04</td><td>Un estudiante no puede tener otro rol.</td><td>Separación de funciones: un estudiante no debe generar, validar ni revisar horarios.</td></tr>
+    <tr><td class="c">RS-05</td><td>Quien valida un horario no es quien lo generó.</td><td>Separación de funciones: la validación es un control de calidad cruzado.</td></tr>
+    <tr><td class="c">RS-13</td><td>El jefe solo revisa horarios ya validados.</td><td>Fija el orden entre RI-17 y RI-18: el jefe revisa lo que ya pasó el control del coordinador.</td></tr>
+    <tr><td class="c">RS-14</td><td>Los coordinadores de apoyo y de resolución están autorizados en el programa.</td><td>Solo un coordinador del programa conoce y puede modificar sus horarios.</td></tr>
+    <tr><td class="c">RS-17</td><td>Solo se usan aulas disponibles, y los laboratorios solo en aulas de tipo laboratorio.</td><td>Evita programar sesiones imposibles de impartir. Requiere el atributo Aula.tipo (sección 14).</td></tr>
+    <tr><td class="c">RS-18</td><td>La cantidad de estudiantes asignados no supera la capacidad del aula.</td><td>Un horario que no cabe en sus aulas no se puede impartir.</td></tr>
+    <tr><td class="c">RS-19</td><td>Un estudiante no tiene dos sesiones activas que se solapen.</td><td>Interpreta la “doble asignación” del enunciado también como choque de horas, no solo como duplicado de horario.</td></tr>
+    <tr><td class="c">RS-20</td><td>Los períodos no se solapan y hay como mucho uno activo.</td><td>Sin esta regla, el análisis “por período” del histórico (RI-20) sería ambiguo.</td></tr>
+    <tr><td class="c">RS-21</td><td>Un período cerrado no admite cambios.</td><td>El histórico consolidado (RH-02) no debe cambiar después de cargarse.</td></tr>
+    <tr><td class="c">RX-04</td><td>Una sesión impartida o cancelada no cambia de estado; una sesión con asistencias no se cancela.</td><td>Protege la coherencia entre las sesiones y las asistencias ya registradas.</td></tr>
+    <tr><td class="c">RX-05</td><td>El período avanza PLANIFICADO → ACTIVO → CERRADO, sin vuelta atrás.</td><td>Reabrir un período invalidaría el histórico ya cargado.</td></tr>
+    <tr><td class="c">RX-06</td><td>Una asignación anulada no se reactiva.</td><td>El historial de cambios queda como una secuencia de asignaciones, sin estados reescritos.</td></tr>
+    <tr><td class="c">RX-08</td><td>La clasificación de un bloque no cambia si está en un horario aprobado.</td><td>Las consultas 2, 4 y 6 agrupan por complejidad y asignatura. Si cambiaran, se alterarían los reportes del pasado.</td></tr>
   </tbody>
 </table>
 
